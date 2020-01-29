@@ -1,0 +1,30 @@
+cabal-version: >=1.10
+
+name: text-searcher
+version: 0.1.0.0
+license: Apache-2.0
+license-file: LICENSE
+author: John Sullivan
+maintainer: john.sullivan.mscs@protonmail.com
+build-type: Simple
+extra-source-files: CHANGELOG.md
+
+executable text-searcher
+  main-is: Main.hs
+  hs-source-dirs: src
+  build-depends: base >=4.11.1.0,
+                 vector >=0.12,
+                 regex-compat >=0.95,
+                 unordered-containers >=0.2.9.0
+  other-modules: TextSearcher
+  default-language: Haskell2010
+
+test-suite test-text-searcher
+  type: exitcode-stdio-1.0
+  main-is: TestTextSearcher.hs
+  hs-source-dirs: test
+  build-depends: base,
+                 text-searcher,
+                 test-framework,
+                 test-framework-hunit,
+                 HUnit
