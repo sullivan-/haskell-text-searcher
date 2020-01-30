@@ -1,4 +1,4 @@
-module TextSearcher (SearchData, mkSearchData) where
+module TextSearcher (SearchData, mkSearchData, search) where
 
 import Control.Applicative (liftA2)
 import Data.Char (toUpper)
@@ -61,3 +61,21 @@ addTerm (index, lookup) term =
   let f new old = old ++ new
       newLookup = M.insertWith f term [index] lookup
   in (index + 1, newLookup)
+
+search :: SearchData -> String -> Int -> [String]
+search searchData term context =
+  let searchTerm = toSearchTerm term
+      lookup = termLookup searchData
+      termIndices = M.lookupDefault [] searchTerm lookup
+  in (searchResult searchData context) <$> termIndices
+
+searchResult :: SearchData -> Int -> Int -> String
+searchResult searchData context termIndex =
+  let
+    lefts = leftBounds searchData
+    startIndex = max (termIndex - context) 0
+    startPos = lefts V.! startIndex
+    rights = rightBounds searchData
+    endIndex = min (termIndex + context) (V.length rights - 1)
+    endPos = rights V.! endIndex
+  in drop startPos (take endPos (document searchData))
