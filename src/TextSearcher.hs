@@ -54,13 +54,13 @@ toSearchTerm word = fmap toUpper word
 
 toSearchData :: String -> [SearchDataRow] -> SearchData
 toSearchData document rows =
-  let leftBounds = V.fromList (leftBound <$> rows)
-      rightBounds = V.fromList (rightBound <$> rows)
-      termLookup = toTermLookup (searchTerm <$> rows)
+  let leftBounds = V.fromList $ leftBound <$> rows
+      rightBounds = V.fromList $ rightBound <$> rows
+      termLookup = toTermLookup $ searchTerm <$> rows
   in SearchData document leftBounds rightBounds termLookup
 
 toTermLookup :: [String] -> TermLookup
-toTermLookup terms = snd (foldl addTerm (0, M.empty) terms)
+toTermLookup terms = snd $ foldl addTerm (0, M.empty) terms
 
 addTerm :: (Int, TermLookup) -> String -> (Int, TermLookup)
 addTerm (index, lookup) term =
@@ -73,7 +73,7 @@ search searchData term context =
   let searchTerm = toSearchTerm term
       lookup = termLookup searchData
       termIndices = M.lookupDefault [] searchTerm lookup
-  in (searchResult searchData context) <$> termIndices
+  in searchResult searchData context <$> termIndices
 
 searchResult :: SearchData -> Int -> Int -> String
 searchResult searchData context termIndex =
@@ -81,8 +81,8 @@ searchResult searchData context termIndex =
     doc = document searchData
     lefts = leftBounds searchData
     startIndex = termIndex - context
-    startPos = maybe 0 id (lefts V.!? startIndex)
+    startPos = maybe 0 id $ lefts V.!? startIndex
     rights = rightBounds searchData
     endIndex = termIndex + context
-    endPos = maybe (length doc) id (rights V.!? endIndex)
-  in drop startPos (take endPos doc)
+    endPos = maybe (length doc) id $ rights V.!? endIndex
+  in drop startPos $ take endPos doc
