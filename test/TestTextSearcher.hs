@@ -27,12 +27,17 @@ testFile fileTest = do
 
 fileTests :: [FileTest]
 fileTests = [
-  FileTest "files/long_excerpt.txt"
-    [
-    ],
   FileTest "files/short_excerpt.txt"
     [
-      SearchTest "testOneHitNoContext" "sketch" 0 ["sketch"]
+      SearchTest "testOneHitNoContext" "sketch" 0 ["sketch"],
+      SearchTest "testMultipleHitsNoContext" "naturalists" 0 ["naturalists", "naturalists"],
+      SearchTest "testBasicSearch" "naturalists" 0 [
+        "great majority of naturalists believed that species",
+        "authors.  Some few naturalists, on the other" ]
+
+    ],
+  FileTest "files/long_excerpt.txt"
+    [
     ]
   ]
 
