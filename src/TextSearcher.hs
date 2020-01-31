@@ -1,8 +1,9 @@
-module TextSearcher (SearchData, mkSearchData, search) where
+module TextSearcher (SearchData, searchDataFromFile, searchDataFromString, search) where
 
 import Control.Applicative (liftA2)
 import Data.Char (toUpper)
 import Data.List (group, sort)
+import System.IO
 import qualified Data.HashMap.Strict as M
 import qualified Data.Vector.Unboxed as V
 import qualified Text.Regex as R
@@ -16,8 +17,13 @@ data SearchData = SearchData {
   termLookup :: TermLookup
 } deriving (Show)
 
-mkSearchData :: String -> SearchData
-mkSearchData document =
+searchDataFromFile :: String -> IO SearchData
+searchDataFromFile filename = do
+  contents <- readFile filename
+  return $ searchDataFromString contents
+
+searchDataFromString :: String -> SearchData
+searchDataFromString document =
   let rows = searchDataRows document 0 in
     toSearchData document rows
 
