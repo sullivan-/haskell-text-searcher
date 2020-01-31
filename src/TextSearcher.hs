@@ -72,10 +72,11 @@ search searchData term context =
 searchResult :: SearchData -> Int -> Int -> String
 searchResult searchData context termIndex =
   let
+    doc = document searchData
     lefts = leftBounds searchData
-    startIndex = max (termIndex - context) 0
-    startPos = lefts V.! startIndex
+    startIndex = termIndex - context
+    startPos = maybe 0 id (lefts V.!? startIndex)
     rights = rightBounds searchData
-    endIndex = min (termIndex + context) (V.length rights - 1)
-    endPos = rights V.! endIndex
-  in drop startPos (take endPos (document searchData))
+    endIndex = termIndex + context
+    endPos = maybe (length doc) id (rights V.!? endIndex)
+  in drop startPos (take endPos doc)
