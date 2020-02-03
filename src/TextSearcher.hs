@@ -24,8 +24,8 @@ searchDataFromFile filename = do
 
 searchDataFromString :: String -> SearchData
 searchDataFromString document =
-  let rows = searchDataRows document 0 in
-    toSearchData document rows
+  let rows = searchDataRows document 0
+  in toSearchData document rows
 
 data SearchDataRow = SearchDataRow {
   leftBound :: Int,
